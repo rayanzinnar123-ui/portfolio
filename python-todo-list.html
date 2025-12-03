@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python To-Do List - Project Details</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="portfolio">
+        <nav class="nav">
+            <div class="nav-container">
+                <div class="logo">&lt;Rayan /&gt;</div>
+                <div class="nav-links">
+                    <a href="index.html" class="nav-link">Home</a>
+                    <a href="index.html#about" class="nav-link">About</a>
+                    <a href="index.html#skills" class="nav-link">Skills</a>
+                    <a href="index.html#projects" class="nav-link">Projects</a>
+                    <a href="index.html#contact" class="nav-link">Contact</a>
+                </div>
+                <button id="mobileMenuBtn" class="mobile-menu-btn">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </nav>
+
+        <section class="section project-detail-section">
+            <div class="container">
+                <a href="index.html#projects" class="back-link">← Back to Projects</a>
+                
+                <div class="project-detail-header">
+                    <h1 class="project-detail-title">Python To-Do List</h1>
+                    <p class="project-detail-subtitle">Command-Line Task Management Application</p>
+                </div>
+
+
+                <div class="project-detail-content">
+                    <div class="project-section">
+                        <h2>Overview</h2>
+                        <p>
+                            A powerful yet simple command-line task management application built with Python. This project demonstrates proficiency in file I/O operations, data persistence, and creating intuitive CLI interfaces. The application allows users to efficiently manage their daily tasks with features like priority levels, due dates, and task filtering.
+                        </p>
+                    </div>
+
+                    <div class="project-section">
+                        <h2>Key Features</h2>
+                        <ul class="feature-list">
+                            <li>Add, edit, and delete tasks with ease</li>
+                            <li>Set priority levels (high, medium, low) for tasks</li>
+                            <li>Filter tasks by priority</li>
+                            <li>Persistent storage using pickle</li>
+                        </ul>
+                    </div>
+
+                    <div class="project-section">
+                        <h2>Technologies Used</h2>
+                        <div class="tech-tags">
+                            <span class="tech-tag">Python 3</span>
+                            <span class="tech-tag">File I/O (Pickle)</span>
+                        </div>
+                    </div>
+
+                    <div class="project-section">
+                        <h2>Challenges & Solutions</h2>
+                        <p>
+                            The main challenge was implementing a robust data persistence system that could handle corrupted files and maintain data integrity. I solved this by implementing JSON validation, backup file creation, and error handling that gracefully recovers from file corruption.
+                        </p>
+                    </div>
+
+                    <div class="project-section">
+                        <h2>Future Improvements</h2>
+                        <p>
+                            Future enhancements include adding task categories and tags, implementing recurring tasks, creating a web-based GUI version, and adding cloud synchronization for multi-device access.
+                        </p>
+                    </div>
+
+                    <div class="project-links">
+                        <a href="to-do-list.html" class="btn btn-primary" rel="noopener noreferrer">View project</a>
+                        <a href="index.html#contact" class="btn btn-secondary">Contact Me</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <p>&copy; 2025 Rayan.</p>
+        </footer>
+    </div>
+
+    <script src="index.js"></script>
+</body>
+</html>

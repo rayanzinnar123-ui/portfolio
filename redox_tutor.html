@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Redox Tutor Bot</title>
+<style>
+/* --- Body --- */
+body { 
+    font-family: Arial, sans-serif;
+    background-image: url(https://cdn.dribbble.com/userupload/23104306/file/original-9badd2b007ec9784d2b56ef52a178e94.gif);
+    background-repeat: no-repeat;
+    background-size: cover;
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+    height: 100vh;
+}
+
+/* --- Chat Box --- */
+#box { 
+    width: 500px;
+    background: rgba(163,193,255,0.85);
+    padding: 15px; 
+    border-radius: 10px; 
+    box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    backdrop-filter: blur(5px);
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- Chat area --- */
+#chat { 
+    height: 600px; 
+    overflow-y: auto; 
+    padding: 10px; 
+    border-radius: 6px; 
+    background: rgba(255,255,255,0.15);
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- Messages --- */
+.msg { 
+    margin: 8px 0; 
+    padding: 10px 14px; 
+    border-radius: 12px;
+    max-width: 80%;
+    word-wrap: break-word;
+    transition: all 0.3s ease;
+}
+.bot { 
+    background: linear-gradient(145deg, #2C2F63, #6C8DF5);
+    color: white; 
+    align-self: flex-start;
+}
+.user { 
+    background: linear-gradient(145deg, #A3C1FF, #B893FF);
+    text-align: right; 
+    align-self: flex-end;
+}
+.hint { 
+    background: rgba(255, 243, 205, 0.9); 
+    color: #856404; 
+    border:1px solid #ffeeba; 
+    font-style: italic; 
+    align-self: flex-start;
+}
+
+/* --- Input and Button --- */
+input { 
+    width: 95%; 
+    padding: 10px;
+    margin-top: 8px; 
+    border-radius: 6px;
+    border: 1px solid #6C8DF5;
+    outline: none;
+}
+button { 
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    cursor: pointer;
+    border: none;
+    border-radius: 6px;
+    background: #2C2F63;
+    color: white;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+button:hover {
+    background: linear-gradient(120deg, #00E5FF, #6C8DF5);
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(0, 229, 255, 0.6);
+}
+
+a{
+    color: white;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    text-decoration: none;
+    font-weight: bold;
+    background: rgba(0,0,0,0.5);
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: background 0.3s ease;
+}
+</style>
+</head>
+<body>
+<a href="index.html">Back to main</a>
+<div id="box">
+    <div id="chat"></div>
+    <input id="inp" placeholder="Type here...">
+    <button onclick="send()">Send</button>
+</div>
+
+<script>
+const reactions = [
+{full:"Fe2+ + MnO4- → Fe3+ + Mn2+", ox:"Fe2+ → Fe3+ + e-", red:"MnO4- + 8H+ + 5e- → Mn2+ + 4H2O"},
+{full:"Cr2O7^2- + I- → Cr3+ + I2", ox:"2I- → I2 + 2e-", red:"Cr2O7^2- + 14H+ + 6e- → 2Cr3+ + 7H2O"},
+{full:"SO2 + H2O2 → H2SO4", ox:"SO2 + 2H2O → SO4^2- + 4H+ + 2e-", red:"H2O2 → O2 + 2H+ + 2e-"},
+{full:"ClO3- + I- → Cl- + I2", ox:"2I- → I2 + 2e-", red:"ClO3- + 6H+ + 6e- → Cl- + 3H2O"},
+{full:"Cu + NO3- → Cu2+ + NO", ox:"Cu → Cu2+ + 2e-", red:"NO3- + 4H+ + 3e- → NO + 2H2O"},
+{full:"Zn + NO3- → Zn2+ + NH4+", ox:"Zn → Zn2+ + 2e-", red:"NO3- + 10H+ + 8e- → NH4+ + 3H2O"},
+{full:"BrO3- + Fe2+ → Br- + Fe3+", ox:"Fe2+ → Fe3+ + e-", red:"BrO3- + 6H+ + 6e- → Br- + 3H2O"},
+{full:"H2O2 + Mn2+ → MnO4- + H+", ox:"H2O2 → O2 + 2H+ + 2e-", red:"Mn2+ + 4H2O → MnO4- + 8H+ + 5e-"},
+{full:"H2S + NO3- → S + NO", ox:"H2S → S + 2H+ + 2e-", red:"NO3- + 4H+ + 3e- → NO + 2H2O"},
+{full:"IO3- + SO2 → I2 + SO4^2-", ox:"SO2 + 2H2O → SO4^2- + 4H+ + 2e-", red:"2IO3- + 12H+ + 10e- → I2 + 6H2O"}
+];
+
+let step = "ox";
+let reaction = null;
+let attempts = 0;
+
+function msg(t, cls="bot") {
+    let c = document.getElementById("chat");
+    let d = document.createElement("div");
+    d.className = "msg " + cls;
+    d.innerText = t;
+    c.appendChild(d);
+    c.scrollTop = c.scrollHeight;
+}
+
+function start() {
+    reaction = reactions[Math.floor(Math.random()*reactions.length)];
+    step = "ox";
+    attempts = 0;
+    msg("Balance this redox reaction (acidic):\n" + reaction.full);
+    msg("Enter the oxidation half-reaction:");
+}
+
+function normalize(s){return s.replace(/\s+/g,"").toLowerCase();}
+
+function showHints(){
+    const hints = [
+        "1. Split the reaction into oxidation and reduction half-reactions.",
+        "2. Balance all atoms except H and O.",
+        "3. Balance O atoms by adding H2O.",
+        "4. Balance H atoms by adding H+.",
+        "5. Add electrons to the side with higher positive charge; ensure electrons lost = electrons gained (multiply if necessary)."
+    ];
+    hints.forEach(h=>msg(h,'hint'));
+}
+
+function check(ans) {
+    // show hints if user types 'show hints'
+    if(ans.toLowerCase() === "show hints") { showHints(); return; }
+    let correct = step === "ox" ? reaction.ox : reaction.red;
+    if(normalize(ans) === normalize(correct)){
+        msg("Correct!");
+        if(step === "ox") { step = "red"; attempts=0; msg("Now enter the reduction half-reaction:"); }
+        else { msg("Full balanced reaction:\n"+reaction.full); setTimeout(start,2000); }
+    } else {
+        attempts++;
+        if(attempts >=3){
+            msg("Incorrect. Correct "+(step==='ox'?'oxidation':'reduction')+" half-reaction:\n"+correct);
+            if(step==='ox'){ step='red'; attempts=0; msg("Now enter the reduction half-reaction:"); }
+            else { msg("Next reaction..."); setTimeout(start,2000); }
+        } else { msg("Wrong! Attempt "+attempts+"/3"); }
+    }
+}
+
+function send() {
+    let v = document.getElementById("inp").value.trim();
+    if(!v) return;
+    msg(v,"user"); // all user messages use 'user' style
+    check(v);
+    document.getElementById("inp").value="";
+}
+
+start();
+</script>
+</body>
+</html>
