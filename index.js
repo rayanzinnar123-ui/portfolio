@@ -1,26 +1,15 @@
+window.addEventListener('load', hidePreloader);
+
+function hidePreloader() {
+  const preloader = document.getElementById('preloader');
+      preloader.style.display = 'none';
+}
+
+
+
+
 document.addEventListener("DOMContentLoaded", () => {
   console.log("[v0] Script loaded and DOM ready")
-
-  // Mobile menu toggle
-  const mobileMenuBtn = document.getElementById("mobileMenuBtn")
-  const navLinks = document.querySelector(".nav-links")
-
-  if (mobileMenuBtn && navLinks) {
-    mobileMenuBtn.addEventListener("click", () => {
-      mobileMenuBtn.classList.toggle("active")
-      navLinks.classList.toggle("active")
-    })
-  }
-
-  // Close mobile menu when clicking on a link
-  document.querySelectorAll(".nav-link").forEach((link) => {
-    link.addEventListener("click", () => {
-      if (mobileMenuBtn && navLinks) {
-        mobileMenuBtn.classList.remove("active")
-        navLinks.classList.remove("active")
-      }
-    })
-  })
 
   const observerOptions = {
     threshold: 0.1,
@@ -198,57 +187,63 @@ document.addEventListener("DOMContentLoaded", () => {
   })
 
   console.log("[v0] All animations initialized")
-})
-// ...existing code...
 
-// EmailJS setup & form handling (guarded)
-document.addEventListener("DOMContentLoaded", () => {
-  if (!window.emailjs) {
-    console.error("EmailJS SDK not loaded. Did you add the SDK <script> before index.js?")
-    return
-  }
-
-  emailjs.init("TjAKvXRGVdkQrQ2VE") // public key
-
-  const contactForm = document.getElementById("contactForm")
-  const formStatus = document.getElementById("formStatus")
-  const submitBtn = contactForm?.querySelector(".submit-btn")
-  const btnText = submitBtn?.querySelector(".btn-text")
-  const btnLoader = submitBtn?.querySelector(".btn-loader")
-
-  if (!contactForm) return
-
-  contactForm.addEventListener("submit", function (e) {
-    e.preventDefault()
-    if (btnText && btnLoader && submitBtn) {
-      btnText.style.display = "none"
-      btnLoader.style.display = "inline"
-      submitBtn.disabled = true
-    }
-    if (formStatus) {
-      formStatus.textContent = ""
-      formStatus.className = "form-status"
+  { 
+    // EmailJS setup & guarded form handling (runs after DOM is ready)
+    if (!window.emailjs) {
+      console.error("EmailJS SDK not loaded. Make sure the SDK <script> is before index.js")
+    } else {
+      emailjs.init("TjAKvXRGVdkQrQ2VE") // public key
     }
 
-    emailjs.sendForm("service_esqe2dc", "template_x6xdiqa", this)
-      .then((response) => {
-        formStatus && (formStatus.textContent = "Message sent successfully! I'll get back to you soon.")
-        formStatus && (formStatus.className = "form-status success")
-        contactForm.reset()
+    const contactForm = document.getElementById("contactForm")
+    if (!contactForm) {
+      console.log("No contact form found on this page")
+    } else {
+      const formStatus = document.getElementById("formStatus")
+      const submitBtn = contactForm.querySelector(".submit-btn")
+      const btnText = submitBtn?.querySelector(".btn-text")
+      const btnLoader = submitBtn?.querySelector(".btn-loader")
+
+      contactForm.addEventListener("submit", function (e) {
+        e.preventDefault()
         if (btnText && btnLoader && submitBtn) {
-          btnText.style.display = "inline"
-          btnLoader.style.display = "none"
-          submitBtn.disabled = false
+          btnText.style.display = "none"
+          btnLoader.style.display = "inline"
+          submitBtn.disabled = true
         }
-      }, (error) => {
-        formStatus && (formStatus.textContent = "Oops! Something went wrong. Please try again.")
-        formStatus && (formStatus.className = "form-status error")
-        if (btnText && btnLoader && submitBtn) {
-          btnText.style.display = "inline"
-          btnLoader.style.display = "none"
-          submitBtn.disabled = false
+        if (formStatus) {
+          formStatus.textContent = ""
+          formStatus.className = "form-status"
         }
-        console.error("EmailJS send error:", error)
+
+        emailjs.sendForm("service_esqe2dc", "template_x6xdiqa", this)
+          .then(() => {
+            formStatus && (formStatus.textContent = "Message sent successfully! I'll get back to you soon.")
+            formStatus && (formStatus.className = "form-status success")
+            contactForm.reset()
+            if (btnText && btnLoader && submitBtn) {
+              btnText.style.display = "inline"
+              btnLoader.style.display = "none"
+              submitBtn.disabled = false
+            }
+          }, (error) => {
+            formStatus && (formStatus.textContent = "Oops! Something went wrong. Please try again.")
+            formStatus && (formStatus.className = "form-status error")
+            if (btnText && btnLoader && submitBtn) {
+              btnText.style.display = "inline"
+              btnLoader.style.display = "none"
+              submitBtn.disabled = false
+            }
+            console.error("EmailJS send error:", error)
+          })
       })
-  })
+    }
+  }
 })
+
+
+
+
+
+
