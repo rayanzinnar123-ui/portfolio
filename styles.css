@@ -86,22 +86,6 @@ body {
   width: 100%;
 }
 
-.mobile-menu-btn{
-  display: none;
-  flex-direction: column;
-  gap: 5px;
-  cursor: pointer;
-  background: none;
-  border: none;
-}
-
-.mobile-menu-btn span {
-  width: 25px;
-  height: 2px;
-  background: var(--text-primary);
-  transition: all 0.3s ease;
-}
-
 /* Hero Section */
 .hero {
   min-height: 100vh;
